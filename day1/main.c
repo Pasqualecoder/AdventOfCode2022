@@ -1,5 +1,10 @@
 #include "../adventofcode.h"
 
+void shift_right(int array[], int size, int position);
+int summatory(int array[], int size);
+
+
+
 void part1(FILE *file) {
     int highest_elf = 0, actual_elf = 0;
     for (char ch = fpeek(file); ch != EOF; ch = fpeek(file)) {
@@ -28,16 +33,14 @@ void part1(FILE *file) {
 }
 
 
-void shift_right(int array[], int size, int position);
-int summatory(int array[], int size);
 
 void part2(FILE *file) {
     int top_n = 3;
     int top_elves[] = {0, 0, 0};
     int actual_elf = 0;
 
-    for (char ch = fpeek(file); ch != EOF; ch = fpeek(file)) {
-        if (ch != '\n') {
+    for (char ch = fpeek(file); true; ch = fpeek(file)) {
+        if (ch != '\n' && ch != EOF) {
             int tmp; // sommatory of the elf
             fscanf(file, "%d", &tmp);
             actual_elf += tmp;
@@ -47,8 +50,8 @@ void part2(FILE *file) {
         }
         else {
             for (int i = 0; i < 3; i++) {
-                // make space for the new elf
                 if (actual_elf > top_elves[i]) {
+                    // make space for the new elf
                     shift_right(top_elves, top_n, i);
                     top_elves[i] = actual_elf;
                     break;
@@ -57,6 +60,8 @@ void part2(FILE *file) {
 
             actual_elf = 0;
 
+            ch = fpeek(file);
+            if (ch == EOF) break;
             // lose the empty line
             getc(file);
         }
@@ -64,12 +69,13 @@ void part2(FILE *file) {
     rewind(file);
 
     // Total of calories carried by the top three of Elves is: 
-    printf("%d\n", summatory(top_elves, top_n));
+    int total_top = summatory(top_elves, top_n);
+    printf("%d\n", total_top);
 }
 
 void shift_right(int array[], int size, int position) {
-    for (int i = position; i < size - 1; i++) {
-        array[i+1] = array[i];
+    for (int i = size-1; i > position; i--) {
+        array[i] = array[i-1];
     }
 }
 
@@ -89,7 +95,8 @@ int main(int argc, char const *argv[]) {
     }
 
     part1(file);
-    part2(file);
+    // part2(file);
+    part2_optimazed(file);
     
     fclose(file);
     return 0;
