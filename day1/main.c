@@ -88,15 +88,14 @@ int summatory(int array[], int size) {
 }
 
 int main(int argc, char const *argv[]) {
-    FILE *file = fopen(SAMPLE_FILE, "r");
+    FILE *file = fopen(INPUT_FILE, "r");
     if (file == NULL) {
         fprintf(stderr, "Cant open file\n");
         exit(EXIT_FAILURE);
     }
 
     part1(file);
-    // part2(file);
-    part2_optimazed(file);
+    part2(file);
     
     fclose(file);
     return 0;
