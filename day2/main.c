@@ -12,11 +12,17 @@ typedef enum me_move_set {
     ME_SCISSORS = 'Z'
 } Me;
 
-typedef enum results_set {
-    DRAW = 3,
+typedef enum points_set {
     WIN = 6,
+    DRAW = 3,
     LOSE = 0
-} Results;
+} Points;
+
+typedef enum result_set {
+    RESULT_LOSE = 'X',
+    RESULT_DRAW = 'Y', 
+    RESULT_WIN = 'Z', 
+} Result;
 
 /*
 returns
@@ -24,31 +30,7 @@ returns
 3: draw
 0: lose
 */
-int result(Opponent opponent, Me me);
-
-// returns the ammount of points acquired in the match
-int load_points(Opponent opponent, Me me);
-
-void part1(FILE *file) {
-    int points = 0;
-    char ch;
-    
-    while ((ch = fpeek(file)) != EOF)
-    {
-        char opponent, me;
-        fscanf(file, "%c %c", &opponent, &me);
-
-        points += load_points(opponent, me);
-
-        // remove \n
-        getc(file);
-    }
-
-    // The ammount of my points is:
-    printf("%d\n", points);
-}
-
-int result(Opponent opponent, Me me) {
+int match(Opponent opponent, Me me) {
     switch (opponent)
     {
     case OPPONENT_ROCK:
@@ -109,11 +91,111 @@ int result(Opponent opponent, Me me) {
     }
 }
 
+// returns the ammount of points acquired in the match
 int load_points(Opponent opponent, Me me) {
     int points_choice = me - 87;
-    int adder = result(opponent, me);
+    int adder = match(opponent, me);
 
     return points_choice + adder;
+}
+
+char choose_move(Opponent opponent, Result result) {
+    switch (opponent)
+    {
+    case OPPONENT_ROCK:
+        switch (result)
+        {
+        case RESULT_WIN:
+            return ME_PAPER;
+            break;
+        case RESULT_DRAW:
+            return ME_ROCK;
+            break;
+        case RESULT_LOSE:
+            return ME_SCISSORS;
+            break;
+        default:
+            exit(EXIT_FAILURE);
+            break;
+        }
+        break;
+    case OPPONENT_PAPER:
+        switch (result)
+        {
+        case RESULT_WIN:
+            return ME_SCISSORS;
+            break;
+        case RESULT_DRAW:
+            return ME_PAPER;
+            break;
+        case RESULT_LOSE:
+            return ME_ROCK;
+            break;
+        default:
+            exit(EXIT_FAILURE);
+            break;
+        }
+        break;
+    case OPPONENT_SCISSORS:
+        switch (result)
+        {
+        case RESULT_WIN:
+            return ME_ROCK;
+            break;
+        case RESULT_DRAW:
+            return ME_SCISSORS;
+            break;
+        case RESULT_LOSE:
+            return ME_PAPER;
+            break;
+        default:
+            exit(EXIT_FAILURE);
+            break;
+        }
+        break;
+    default:
+        exit(EXIT_FAILURE);
+        break;
+    }
+}
+
+void part1(FILE *file) {
+    int points = 0;
+    char ch;
+    
+    while ((ch = fpeek(file)) != EOF) {
+        char opponent, me;
+        fscanf(file, "%c %c", &opponent, &me);
+
+        points += load_points(opponent, me);
+
+        // remove \n
+        getc(file);
+    }
+    rewind(file);
+
+    // The ammount of my points is:
+    printf("%d\n", points);
+}
+
+void part2(FILE *file) {
+    int points = 0;
+    char ch;
+    
+    while ((ch = fpeek(file)) != EOF) {
+        char opponent, result;
+        fscanf(file, "%c %c", &opponent, &result);
+
+        char me = choose_move(opponent, result);
+        points += load_points(opponent, me);
+
+        // remove \n
+        getc(file);
+    }
+    rewind(file);
+
+    // The ammount of my points is:
+    printf("%d\n", points);
 }
 
 int main(int argc, char const *argv[])
@@ -121,6 +203,7 @@ int main(int argc, char const *argv[])
     FILE *file = open_file(INPUT_FILE);
     
     part1(file);
+    part2(file);
     
     return 0;
 }
