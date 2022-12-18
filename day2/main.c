@@ -175,7 +175,7 @@ void part1(FILE *file) {
     rewind(file);
 
     // The ammount of my points is:
-    printf("%d\n", points);
+    fprintf(stdout, "%d\n", points);
 }
 
 void part2(FILE *file) {
@@ -195,7 +195,7 @@ void part2(FILE *file) {
     rewind(file);
 
     // The ammount of my points is:
-    printf("%d\n", points);
+    fprintf(stdout, "%d\n", points);
 }
 
 int main(int argc, char const *argv[])

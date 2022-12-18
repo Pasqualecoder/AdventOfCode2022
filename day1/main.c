@@ -29,7 +29,7 @@ void part1(FILE *file) {
     rewind(file);
 
     // The Elf who carry the most Calories is carrying: 
-    printf("%d\n", highest_elf);
+    fprintf(stdout, "%d\n", highest_elf);
 }
 
 
@@ -70,7 +70,7 @@ void part2(FILE *file) {
 
     // Total of calories carried by the top three of Elves is: 
     int total_top = summatory(top_elves, top_n);
-    printf("%d\n", total_top);
+    fprintf(stdout, "%d\n", total_top);
 }
 
 void shift_right(int array[], int size, int position) {
